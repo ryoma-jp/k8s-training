@@ -165,3 +165,11 @@ $ docker images
 REPOSITORY                                                TAG                       IMAGE ID       CREATED         SIZE
 centos                                                    7-git                     6ee9bb14ce23   7 minutes ago   647MB
 ```
+### (8)イメージをリモートリポジトリへ保存(docker push)
+
+書籍ではクラウドへの保存を想定していますが，ここではプライベートリポジトリへ保存する手順を示します．
+
+```
+$ docker tag centos:7-git ryoma/centos:7-git
+$ docker push ryoma/centos:7-git
+```
