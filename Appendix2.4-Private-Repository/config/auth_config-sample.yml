@@ -1,0 +1,18 @@
+server:
+  addr: ":5001"
+  certificate: "/ssl/server.crt"
+  key: "/ssl/server.key"
+
+token:
+  issuer: "Auth Service"  # Must match issuer in the Registry config.
+  expiration: 900
+
+users:
+  # Password is specified as a BCrypt hash. Use `htpasswd -nB USERNAME` to generate.
+  "<user name>":
+    password: "<generated hash>"
+
+acl:
+  - match: {account: "<user name>"}
+    actions: ["*"]
+    comment: "<user name> has full access to everything."
