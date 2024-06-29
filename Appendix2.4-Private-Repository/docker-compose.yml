@@ -8,41 +8,16 @@ services:
     stdin_open: true
     tty: true
     container_name: docker-registry
-    depends_on:
-      - docker-auth
     environment:
       - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry
-      - REGISTRY_AUTH=token
-      - REGISTRY_AUTH_TOKEN_REALM=https://192.168.100.3:5001/auth
-      - REGISTRY_AUTH_TOKEN_SERVICE="Docker registry"
-      - REGISTRY_AUTH_TOKEN_ISSUER="Auth Service"
-      - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/ssl/server.crt
+      - REGISTRY_STORAGE_DELETE_ENABLED='True'
     volumes:
-      - $PWD/ssl:/ssl
       - $PWD/docker_registry/data:/var/lib/registry
     ports:
       - "5000:5000"
     networks:
       docker-registry-net:
         ipv4_address: 192.168.100.2
-
-  # docker auth
-  docker-auth:
-    image: cesanta/docker_auth:1.12
-    restart: always
-    stdin_open: true
-    tty: true
-    container_name: docker-auth
-    command: /config/auth_config.yml
-    volumes:
-      - $PWD/config:/config:ro
-      - $PWD/log/docker_auth:/logs
-      - $PWD/ssl:/ssl
-    ports:
-      - "5001:5001"
-    networks:
-      docker-registry-net:
-        ipv4_address: 192.168.100.3
 
   # docker registry frontend
   docker-registry-frontend:
@@ -56,15 +31,11 @@ services:
     environment:
       - ENV_DOCKER_REGISTRY_HOST=192.168.100.2
       - ENV_DOCKER_REGISTRY_PORT=5000
-      - ENV_USE_SSL=yes
-    volumes:
-      - $PWD/ssl/server.crt:/etc/apache2/server.crt:ro
-      - $PWD/ssl/server.key:/etc/apache2/server.key:ro
     ports:
-      - "443:443"
+      - "8080:80"
     networks:
       docker-registry-net:
-        ipv4_address: 192.168.100.4
+        ipv4_address: 192.168.100.3
 
 # networks
 networks:

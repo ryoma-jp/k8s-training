@@ -8,45 +8,11 @@
 
 ## (1)システム構成
 
-以下の機能を持つプライベートリポジトリを構築します．
+以下の機能を持つプライベートレジストリを構築する．  
+認証機能付きのレジストリを構築する予定であったが，docker-registry-frontendが認証に対応していない為，認証機能は省略する．
 
-- dockerコマンドからレジストリへのログイン(login)，ログアウト(logout)，登録(push)，削除(rmi)，リスト取得(images)，実行(run)，ダウンロード(pull)などが可能
-- ブラウザからレジストリが保有する全リポジトリのリスト表示，リポジトリの詳細表示
-
-## (2)準備作業
-
-### SSL証明書の作成
-
-```
-$ mkdir ssl
-$ cd ssl/
-$ openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout server.key -out server.crt
-You are about to be asked to enter information that will be incorporated
-into your certificate request.
-What you are about to enter is what is called a Distinguished Name or a DN.
-There are quite a few fields but you can leave some blank
-For some fields there will be a default value,
-If you enter '.', the field will be left blank.
------
-Country Name (2 letter code) [AU]:JP
-State or Province Name (full name) [Some-State]:Tokyo
-Locality Name (eg, city) []:
-Organization Name (eg, company) [Internet Widgits Pty Ltd]:
-Organizational Unit Name (eg, section) []:
-Common Name (e.g. server FQDN or YOUR name) []:
-Email Address []:
-$ cd ..
-```
-
-### ユーザー認証ファイルの作成
-
-[auth_config.yml](./config/auth_config.yml)を，[auth_config-sample.yml](./config/auth_config-sample.yml)を参考に作成する．  
-下記の手順で生成するハッシュをユーザ名とともに追記する．
-
-```
-$ apt install -y apache2-utils
-$ htpasswd -nbB <user name> <password> | cut -d: -f2
-```
+- dockerコマンドからレジストリへの登録(push)，ダウンロード(pull)が可能
+- ブラウザからレジストリが保有する全リポジトリのリスト表示，リポジトリの詳細表示が可能
 
 ### 環境設定ファイルの作成
 
@@ -70,20 +36,6 @@ $ docker-compose up -d
 
 ```
 $ docker-compose down
-```
-
-## (4)Dockerコマンドからのアクセス手順
-
-### ログイン
-
-```
-$ docker login -u <username> 192.168.100.2:5000
-```
-
-### ログアウト
-
-```
-$ docker logout 192.168.100.2:5000
 ```
 
 ### イメージの登録
