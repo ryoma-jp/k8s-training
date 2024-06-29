@@ -36,6 +36,8 @@ For more examples and ideas, visit:
 
 書籍ではDockerイメージの保存をDocker HubやIBM Cloudへ登録することが説明されていますが，ここではクラウドではなくオンプレミス環境を想定し，プライベートリポジトリへ登録する手順を示します．
 
+プライベートリポジトリの構築方法は[付録2.4 プライベートリポジトリ](./Appendix2.4-Private-Repository/README.md)を参照してください．
+
 ### (1)コンテナ実行前の事前ダウンロード(docker pull)
 
 ```
@@ -162,14 +164,41 @@ $ docker commit 07af1decb255 centos:7-git
 sha256:6ee9bb14ce23eefc6f2cc61b080ec8ea1b0839e4497e7c9ef6e8ceaae97f3f86
 
 $ docker images
-REPOSITORY                                                TAG                       IMAGE ID       CREATED         SIZE
-centos                                                    7-git                     6ee9bb14ce23   7 minutes ago   647MB
+REPOSITORY    TAG      IMAGE ID       CREATED         SIZE
+centos        7-git    6ee9bb14ce23   7 minutes ago   647MB
 ```
 ### (8)イメージをリモートリポジトリへ保存(docker push)
 
 書籍ではクラウドへの保存を想定していますが，ここではプライベートリポジトリへ保存する手順を示します．
 
 ```
-$ docker tag centos:7-git ryoma/centos:7-git
-$ docker push ryoma/centos:7-git
+$ docker tag centos:7-git 192.168.100.2:5000/centos:7-git
+$ $ docker push 192.168.100.2:5000/centos:7-git
+The push refers to repository [192.168.100.2:5000/centos]
+14aa6be18d2e: Pushed
+174f56854903: Pushed
+7-git: digest: sha256:9e6c89cf020e96cb89627f63d234f0da5c3b3dcc313ba1b3552fe01a8a7a04ea size: 742
+```
+
+### (9)終了済みコンテナの削除(docker rm)
+
+コンテナIDを指定して終了済みコンテナを削除すると，コンテナのログ表示ができなくなります．
+
+```
+$ docker rm 9e52e187af2e
+$ docker logs 9e52e187af2e
+Error response from daemon: No such container: 9e52e187af2e
+```
+
+### (10)イメージの削除(docker rmi)
+
+```
+$ docker images
+REPOSITORY                  TAG     IMAGE ID       CREATED         SIZE
+192.168.100.2:5000/centos   7-git   6ee9bb14ce23   2 weeks ago     647MB
+centos                      7-git   6ee9bb14ce23   2 weeks ago     647MB
+$ docker rmi 192.168.100.2:5000/centos:7-git
+$ docker images
+REPOSITORY                  TAG     IMAGE ID       CREATED         SIZE
+centos                      7-git   6ee9bb14ce23   2 weeks ago     647MB
 ```
