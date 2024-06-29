@@ -53,7 +53,7 @@ $ htpasswd -nbB <user name> <password> | cut -d: -f2
 `/etc/docker/daemon.json`に以下を追記する．
 
 ```
-"insecure-registries":["172.18.0.2:5000"]
+"insecure-registries":["192.168.100.2:5000"]
 ```
 
 ## (3)レジストリの起動と停止
@@ -63,45 +63,13 @@ $ htpasswd -nbB <user name> <password> | cut -d: -f2
 $ docker pull registry:2.8.3
 $ docker pull cesanta/docker_auth:1.12
 $ docker pull konradkleine/docker-registry-frontend:v2
-$ docker network create --subnet 172.18.0.0/24 fixed_container_network
-$ docker run --network fixed_container_network -d \
--v $PWD/config:/config:ro \
--v $PWD/log/docker_auth:/logs \
--v $PWD/ssl:/ssl \
--p 5001:5001 \
---restart=always \
---name docker_auth \
---ip 172.18.0.3 \
-cesanta/docker_auth:1.12 /config/auth_config.yml
-$ docker run --network fixed_container_network -d -p 5000:5000 \
--e REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry \
--e REGISTRY_AUTH=token \
--e REGISTRY_AUTH_TOKEN_REALM=https://172.18.0.3:5001/auth \
--e REGISTRY_AUTH_TOKEN_SERVICE="Docker registry" \
--e REGISTRY_AUTH_TOKEN_ISSUER="Auth Service" \
--e REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/ssl/server.crt \
--v $PWD/ssl:/ssl \
--v $PWD/docker_registry/data:/var/lib/registry \
---restart=always \
---ip 172.18.0.2 \
---name registry registry:2.8.3
-# --- T.B.D ---
-#$ docker run --network fixed_container_network -d \
-#-e ENV_DOCKER_REGISTRY_HOST=172.18.0.2 \
-#-e ENV_DOCKER_REGISTRY_PORT=5000 \
-#-e ENV_USE_SSL=yes \
-#-v $PWD/ssl/server.crt:/etc/apache2/server.crt:ro \
-#-v $PWD/ssl/server.key:/etc/apache2/server.key:ro \
-#--ip 172.18.0.5 \
-#-p 443:443 \
-#--name frontend konradkleine/docker-registry-frontend:v2
+$ docker-compose up -d
 ```
 
 ### 停止
 
 ```
-$ docker stop registry docker_auth
-$ docker rm registry docker_auth
+$ docker-compose down
 ```
 
 ## (4)Dockerコマンドからのアクセス手順
@@ -109,21 +77,21 @@ $ docker rm registry docker_auth
 ### ログイン
 
 ```
-$ docker login -u <username> 172.18.0.2:5000
+$ docker login -u <username> 192.168.100.2:5000
 ```
 
 ### ログアウト
 
 ```
-$ docker logout 172.18.0.2:5000
+$ docker logout 192.168.100.2:5000
 ```
 
 ### イメージの登録
 
 ```
-$ docker tag centos:7-git 172.18.0.2:5000/centos:7-git
-$ docker push 172.18.0.2:5000/centos:7-git
-The push refers to repository [172.18.0.2:5000/centos]
+$ docker tag centos:7-git 192.168.100.2:5000/centos:7-git
+$ $ docker push 192.168.100.2:5000/centos:7-git
+The push refers to repository [192.168.100.2:5000/centos]
 14aa6be18d2e: Pushed
 174f56854903: Pushed
 7-git: digest: sha256:9e6c89cf020e96cb89627f63d234f0da5c3b3dcc313ba1b3552fe01a8a7a04ea size: 742
