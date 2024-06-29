@@ -109,13 +109,13 @@ $ docker rm registry docker_auth
 ### ログイン
 
 ```
-$ docker login 172.18.0.2:5000
+$ docker login -u <username> 172.18.0.2:5000
 ```
 
 ### ログアウト
 
 ```
-$ docker logout
+$ docker logout 172.18.0.2:5000
 ```
 
 ### イメージの登録

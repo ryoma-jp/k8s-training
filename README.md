@@ -7,6 +7,7 @@
 |ディレクトリ|説明|
 |:--|:--|
 |[Step01-コンテナの最初の一歩](./Step01-First-Step-of-Container)|hello-worldからコンテナイメージをダウンロードして起動する|
+|[付録2.4](./Appendix2.4-Private-Repository/)|プライベートリポジトリを構築する|
 
 ## 動作確認環境
 
