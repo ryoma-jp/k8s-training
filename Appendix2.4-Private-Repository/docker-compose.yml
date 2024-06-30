@@ -10,7 +10,7 @@ services:
     container_name: docker-registry
     environment:
       - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry
-      - REGISTRY_STORAGE_DELETE_ENABLED='True'
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
     volumes:
       - $PWD/docker_registry/data:/var/lib/registry
     ports:
