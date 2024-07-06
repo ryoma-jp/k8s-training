@@ -173,7 +173,7 @@ centos        7-git    6ee9bb14ce23   7 minutes ago   647MB
 
 ```
 $ docker tag centos:7-git 192.168.100.2:5000/centos:7-git
-$ $ docker push 192.168.100.2:5000/centos:7-git
+$ docker push 192.168.100.2:5000/centos:7-git
 The push refers to repository [192.168.100.2:5000/centos]
 14aa6be18d2e: Pushed
 174f56854903: Pushed
