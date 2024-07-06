@@ -38,19 +38,20 @@ $ docker-compose down
 ### イメージの登録
 
 ```
-$ docker tag centos:7-git 192.168.100.2:5000/centos:7-git
-$ $ docker push 192.168.100.2:5000/centos:7-git
-The push refers to repository [192.168.100.2:5000/centos]
-14aa6be18d2e: Pushed
-174f56854903: Pushed
-7-git: digest: sha256:9e6c89cf020e96cb89627f63d234f0da5c3b3dcc313ba1b3552fe01a8a7a04ea size: 742
+$ docker tag ubuntu:23.04-git 192.168.100.2:5000/ubuntu:23.04-git
+$ docker push 192.168.100.2:5000/ubuntu:23.04-git
+$ docker push 192.168.100.2:5000/ubuntu:23.04-git
+The push refers to repository [192.168.100.2:5000/ubuntu]
+5ce3706d57b0: Pushed
+48143ecdba52: Pushed
+23.04-git: digest: sha256:c37ddcb5093a3054deb976dfa4c050f306b46cf7fa4da311eee0288b9551e077 size: 741
 ```
 
 ### リポジトリ一覧の表示
 
 ```
 $ curl http://192.168.100.2:5000/v2/_catalog
-{"repositories":["centos"]}
+{"repositories":["ubuntu"]}
 ```
 
 ![docker-registry-frontend](./figures/docker-registry-frontend.png)
@@ -64,37 +65,37 @@ $ curl http://192.168.100.2:5000/v2/_catalog
 タグは`curl`で`DELETE`を送信することで削除できる．
 
 ```
-$ curl -i -H "Accept: application/vnd.docker.distribution.manifest.v2+json" 192.168.100.2:5000/v2/centos/manifests/7-git
+$ curl -i -H "Accept: application/vnd.docker.distribution.manifest.v2+json" 192.168.100.2:5000/v2/ubuntu/manifests/23.04-git
 HTTP/1.1 200 OK
-Content-Length: 742
+Content-Length: 741
 Content-Type: application/vnd.docker.distribution.manifest.v2+json
-Docker-Content-Digest: sha256:9e6c89cf020e96cb89627f63d234f0da5c3b3dcc313ba1b3552fe01a8a7a04ea
+Docker-Content-Digest: sha256:c37ddcb5093a3054deb976dfa4c050f306b46cf7fa4da311eee0288b9551e077
 Docker-Distribution-Api-Version: registry/2.0
-Etag: "sha256:9e6c89cf020e96cb89627f63d234f0da5c3b3dcc313ba1b3552fe01a8a7a04ea"
+Etag: "sha256:c37ddcb5093a3054deb976dfa4c050f306b46cf7fa4da311eee0288b9551e077"
 X-Content-Type-Options: nosniff
-Date: Sat, 29 Jun 2024 23:28:22 GMT
+Date: Sat, 06 Jul 2024 11:37:50 GMT
 
 {
    "schemaVersion": 2,
    "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
    "config": {
       "mediaType": "application/vnd.docker.container.image.v1+json",
-      "size": 2722,
-      "digest": "sha256:6ee9bb14ce23eefc6f2cc61b080ec8ea1b0839e4497e7c9ef6e8ceaae97f3f86"
+      "size": 2144,
+      "digest": "sha256:7399d06d535c5c10ec149a3311d3178814f4606879f98b29229eea2ac1ececf0"
    },
    "layers": [
       {
          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
-         "size": 76097157,
-         "digest": "sha256:2d473b07cdd5f0912cd6f1a703352c82b512407db6b05b43f2553732b55df3bc"
+         "size": 27663335,
+         "digest": "sha256:efcc827fbbb39a149bce1b1b0951eccfa438d1d84153744033dd253856da8a08"
       },
       {
          "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
-         "size": 159942653,
-         "digest": "sha256:ab836e6fae9798732b012b04146db2b765bf7590ed3afb6602700a7eaa5eaa80"
+         "size": 57406618,
+         "digest": "sha256:2cd838e20c78e949fcd24e55f3455c31d519e3b5f497773bfce9c9861cf117dd"
       }
    ]
-$ curl -X DELETE 192.168.100.2:5000/v2/centos/manifests/sha256:9e6c89cf020e96cb89627f63d234f0da5c3b3dcc313ba1b3552fe01a8a7a04ea
+}$ curl -X DELETE 192.168.100.2:5000/v2/ubuntu/manifests/sha256:c37ddcb5093a3054deb976dfa4c050f306b46cf7fa4da311eee0288b9551e077
 ```
 
 ![docker-registry-frontend-tag-deleted](./figures/docker-registry-frontend-tag-deleted.png)
@@ -107,8 +108,8 @@ $ curl -X DELETE 192.168.100.2:5000/v2/centos/manifests/sha256:9e6c89cf020e96cb8
 $ docker-compose exec docker-registry sh
 / # cd /var/lib/registry/docker/registry/v2/repositories
 /var/lib/registry/docker/registry/v2/repositories # ls
-centos
-/var/lib/registry/docker/registry/v2/repositories # rm -rf centos/
+ubuntu
+/var/lib/registry/docker/registry/v2/repositories # rm -rf ubuntu/
 /var/lib/registry/docker/registry/v2/repositories # 
 ```
 

@@ -40,20 +40,22 @@ For more examples and ideas, visit:
 
 ### (1)コンテナ実行前の事前ダウンロード(docker pull)
 
+書籍では`centos:7`を使用しているが，[2024年6月30日にEOLとなった](https://www.redhat.com/ja/topics/linux/centos-linux-eol)ことに伴い，`Ubuntu:23.04`を使用して動作確認を行う．
+
 ```
-$ docker pull centos:7
-7: Pulling from library/centos
-2d473b07cdd5: Pull complete
-Digest: sha256:be65f488b7764ad3638f236b7b515b3678369a5124c47b8d32916d6487418ea4
-Status: Downloaded newer image for centos:7
-docker.io/library/centos:7
+$ docker pull ubuntu:23.04
+23.04: Pulling from library/ubuntu
+6360b3717211: Already exists
+Digest: sha256:5a828e28de105c3d7821c4442f0f5d1c52dc16acf4999d5f31a3bc0f03f06edd
+Status: Downloaded newer image for ubuntu:23.04
+docker.io/library/ubuntu:23.04
 ```
 
 ### (2)コンテナの実行(docker run)
 
 ```
-$ docker run -it --name test1 centos:7 bash
-[root@c26163e9b668 /]# 
+$ docker run -it --name test1 ubuntu:23.04 bash
+root@b48b94ed5b5c:/# 
 ```
 
 ターミナルにコンテナを制御するプロンプトが表示されるが，コンテナとホストOSとの間で制御を切り替えるために，デタッチとアタッチを行う．  
@@ -64,23 +66,23 @@ $ docker run -it --name test1 centos:7 bash
 `Ctrl+P`を押した後，`Ctrl+Q`を押すとコンテナの制御をホストOSに戻すことができる．
 
 ```
-[root@c26163e9b668 /]# (Host prompt)$ 
+[root@b48b94ed5b5c /]# (Host prompt)$ 
 ```
 
 #### (2-2)アタッチ(docker attach)
 
 ```
 $ docker attach test1
-[root@c26163e9b668 /]#
+[root@b48b94ed5b5c /]#
 ```
 
 ### (3)コンテナの状態の確認表示(docker ps)
 
 ```
 $ docker ps -a
-CONTAINER ID   IMAGE            COMMAND       CREATED          STATUS                      PORTS          NAMES
-c26163e9b668   centos:7         "bash"        19 minutes ago   Up 19 minutes                              test1
-343615ae1149   hello-world      "/hello"      32 minutes ago   Exited (0) 32 minutes ago                  sleepy_montalcini
+CONTAINER ID   IMAGE            COMMAND    CREATED          STATUS                        PORTS   NAMES
+b48b94ed5b5c   ubuntu:23.04     "bash"     33 seconds ago   Up 30 seconds                         test1
+343615ae1149   hello-world      "/hello"   32 minutes ago   Exited (0) 32 minutes ago             sleepy_montalcini
 ```
 
 ### (4)ログ表示(docker logs)
@@ -116,13 +118,13 @@ For more examples and ideas, visit:
 
 ```
 $ docker ps
-CONTAINER ID   IMAGE      COMMAND   CREATED          STATUS          PORTS     NAMES
-c26163e9b668   centos:7   "bash"    26 minutes ago   Up 26 minutes             test1
+CONTAINER ID   IMAGE            COMMAND    CREATED          STATUS              PORTS   NAMES
+b48b94ed5b5c   ubuntu:23.04     "bash"     33 seconds ago   Up 30 seconds               test1
 $ docker stop test1
 test1
 $ docker ps -a
-CONTAINER ID   IMAGE      COMMAND   CREATED          STATUS                        PORTS     NAMES
-c26163e9b668   centos:7   "bash"    26 minutes ago   Exited (137) 13 seconds ago             test1
+CONTAINER ID   IMAGE            COMMAND    CREATED          STATUS              PORTS                                 NAMES
+b48b94ed5b5c   ubuntu:23.04     "bash"                      4 minutes ago       Exited (137) 5 seconds ago            test1
 ```
 
 ### (6)コンテナの再スタート(docker start)
@@ -131,53 +133,62 @@ c26163e9b668   centos:7   "bash"    26 minutes ago   Exited (137) 13 seconds ago
 $ docker start test1
 test1
 $ docker ps
-CONTAINER ID   IMAGE      COMMAND   CREATED          STATUS         PORTS     NAMES
-c26163e9b668   centos:7   "bash"    33 minutes ago   Up 2 seconds             test1
+CONTAINER ID   IMAGE           COMMAND   CREATED          STATUS         PORTS     NAMES
+b48b94ed5b5c   ubuntu:23.04    "bash"    6 minutes ago    Up 2 seconds             test1
 ```
 
 ### (7)実行中コンテナの変更をリポジトリへ保存(docker commit)
 
 ```
-[root@07af1decb255 /]# yum update -y
-Loaded plugins: fastestmirror, ovl
-Determining fastest mirrors
- * base: ftp.jaist.ac.jp
- * extras: ftp.jaist.ac.jp
+root@b48b94ed5b5c:/# apt update -y
+Get:1 http://archive.ubuntu.com/ubuntu lunar InRelease [267 kB]
+Get:2 http://security.ubuntu.com/ubuntu lunar-security InRelease [109 kB]
+Get:3 http://security.ubuntu.com/ubuntu lunar-security/main amd64 Packages [429 kB]
 
-(以下省略)
+(中略)
 
-[root@07af1decb255 /]# yum install -y git
-Loaded plugins: fastestmirror, ovl
-Loading mirror speeds from cached hostfile
- * base: ftp.jaist.ac.jp
- * extras: ftp.jaist.ac.jp
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+9 packages can be upgraded. Run 'apt list --upgradable' to see them.
+root@b48b94ed5b5c:/# apt install -y git
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
 
-(以下省略)
+(中略)
+
+rocessing triggers for ca-certificates (20230311ubuntu0.23.04.1) ...
+Updating certificates in /etc/ssl/certs...
+0 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+root@b48b94ed5b5c:/#
 
 (デタッチ)
 
 $ docker ps
-CONTAINER ID   IMAGE      COMMAND   CREATED       STATUS       PORTS     NAMES
-07af1decb255   centos:7   "bash"    2 hours ago   Up 2 hours             frosty_dirac
-
-$ docker commit 07af1decb255 centos:7-git
-sha256:6ee9bb14ce23eefc6f2cc61b080ec8ea1b0839e4497e7c9ef6e8ceaae97f3f86
-
+CONTAINER ID   IMAGE          COMMAND    CREATED         STATUS         PORTS      NAMES
+b48b94ed5b5c   ubuntu:23.04   "bash"     9 minutes ago   Up 3 minutes              test1
+$ docker commit b48b94ed5b5c ubuntu:23.04-git
+sha256:7399d06d535c5c10ec149a3311d3178814f4606879f98b29229eea2ac1ececf0
 $ docker images
-REPOSITORY    TAG      IMAGE ID       CREATED         SIZE
-centos        7-git    6ee9bb14ce23   7 minutes ago   647MB
+REPOSITORY     TAG             IMAGE ID       CREATED          SIZE
+ubuntu         23.04-git       7399d06d535c   13 seconds ago   197MB
 ```
+
 ### (8)イメージをリモートリポジトリへ保存(docker push)
 
 書籍ではクラウドへの保存を想定しているが，ここではプライベートリポジトリへ保存する手順を示す．
 
 ```
-$ docker tag centos:7-git 192.168.100.2:5000/centos:7-git
-$ docker push 192.168.100.2:5000/centos:7-git
-The push refers to repository [192.168.100.2:5000/centos]
-14aa6be18d2e: Pushed
-174f56854903: Pushed
-7-git: digest: sha256:9e6c89cf020e96cb89627f63d234f0da5c3b3dcc313ba1b3552fe01a8a7a04ea size: 742
+$ docker tag ubuntu:23.04-git 192.168.100.2:5000/ubuntu:23.04-git
+$ docker push 192.168.100.2:5000/ubuntu:23.04-git
+$ docker push 192.168.100.2:5000/ubuntu:23.04-git
+The push refers to repository [192.168.100.2:5000/ubuntu]
+5ce3706d57b0: Pushed
+48143ecdba52: Pushed
+23.04-git: digest: sha256:c37ddcb5093a3054deb976dfa4c050f306b46cf7fa4da311eee0288b9551e077 size: 741
 ```
 
 ### (9)終了済みコンテナの削除(docker rm)
@@ -185,20 +196,20 @@ The push refers to repository [192.168.100.2:5000/centos]
 コンテナIDを指定して終了済みコンテナを削除すると，コンテナのログ表示ができなくなる．
 
 ```
-$ docker rm 9e52e187af2e
-$ docker logs 9e52e187af2e
-Error response from daemon: No such container: 9e52e187af2e
+$ docker rm 343615ae1149
+$ docker logs 343615ae1149
+Error response from daemon: No such container: 343615ae1149
 ```
 
 ### (10)イメージの削除(docker rmi)
 
 ```
 $ docker images
-REPOSITORY                  TAG     IMAGE ID       CREATED         SIZE
-192.168.100.2:5000/centos   7-git   6ee9bb14ce23   2 weeks ago     647MB
-centos                      7-git   6ee9bb14ce23   2 weeks ago     647MB
-$ docker rmi 192.168.100.2:5000/centos:7-git
+REPOSITORY                  TAG         IMAGE ID       CREATED         SIZE
+192.168.100.2:5000/ubuntu   23.04-git   7399d06d535c   3 minutes ago   197MB
+ubuntu                      23.04-git   7399d06d535c   3 minutes ago   197MB
+$ docker rmi 192.168.100.2:5000/ubuntu:23.04-git
 $ docker images
-REPOSITORY                  TAG     IMAGE ID       CREATED         SIZE
-centos                      7-git   6ee9bb14ce23   2 weeks ago     647MB
+REPOSITORY                  TAG         IMAGE ID       CREATED         SIZE
+ubuntu                      23.04-git   7399d06d535c   3 minutes ago   197MB
 ```
