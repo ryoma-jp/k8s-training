@@ -9,6 +9,8 @@
 |[Step03-コンテナ開発](./Step03-Container-Development/)|コンテナのビルドや実行を行う|
 |[Step04-コンテナとネットワーク](./Step04-Container-and-Network/)|コンテナとネットワークとの関係を理解する|
 |[Step05-コンテナAPI](./Step05-Container-API/)|コンテナを操作するAPIを理解する|
+|[Step06-Kubenetes最初の一歩](./Step06-Kubernetes-First-Step/)|hello-worldコンテナをKubernetesで動かしてDockerとの違いを知る|
+|[付録1](./Appendix1-Training-Environment/)|学習環境としてKubernetesのインストールとminikubeの起動を行う|
 |[付録2.4](./Appendix2.4-Private-Repository/)|プライベートリポジトリを構築する|
 
 ## 動作確認環境
