@@ -5,6 +5,10 @@
 |ディレクトリ|説明|
 |:--|:--|
 |[Step01-コンテナの最初の一歩](./Step01-First-Step-of-Container)|hello-worldからコンテナイメージをダウンロードして起動する|
+|[Step02-コンテナの操作](./Step02-Container-Operations/)|コンテナを操作する|
+|[Step03-コンテナ開発](./Step03-Container-Development/)|コンテナのビルドや実行を行う|
+|[Step04-コンテナとネットワーク](./Step04-Container-and-Network/)|コンテナとネットワークとの関係を理解する|
+|[Step05-コンテナAPI](./Step05-Container-API/)|コンテナを操作するAPIを理解する|
 |[付録2.4](./Appendix2.4-Private-Repository/)|プライベートリポジトリを構築する|
 
 ## 動作確認環境
