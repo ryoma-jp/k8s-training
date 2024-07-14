@@ -1,6 +1,7 @@
 # 付録1 学習環境1
 
-書籍ではMac，Windows, Vargrant仮想環境上のLinuxの手順が記載されていますが，ここではWSL2上のUbuntu 22.04で動作確認をおこなっていますので，[Kubenetes公式の手順](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl-linux/)に沿って，`kubectl`をインストールします．
+書籍ではMac，Windows, Vargrant仮想環境上のLinuxの手順が記載されているが，ここではWSL2上のUbuntu 22.04で動作確認を行うため，[Kubenetes公式の手順](https://kubernetes.io/ja/docs/tasks/tools/install-kubectl-linux/)に沿って，`kubectl`をインストールする．  
+また，minikubeのインストールと実行についても[minikube公式の手順](https://minikube.sigs.k8s.io/docs/start/)に沿って行う．
 
 ## kubectlのインストール
 
