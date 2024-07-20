@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  # docker private registry
+  docker-registry:
+    image: registry:2.8.3
+    restart: always
+    stdin_open: true
+    tty: true
+    container_name: docker-registry
+    environment:
+      - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
+      - REGISTRY_AUTH=token
+      - REGISTRY_AUTH_TOKEN_REALM=https://192.168.100.3:5001/auth
+      - REGISTRY_AUTH_TOKEN_SERVICE="Docker registry"
+      - REGISTRY_AUTH_TOKEN_ISSUER="Auth Service"
+      - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/ssl/server.pem
+    volumes:
+      - $PWD/docker_registry/data:/var/lib/registry
+      - $PWD/ssl:/ssl
+    ports:
+      - "5000:5000"
+    depends_on:
+      - cesanta-docker_auth
+    networks:
+      docker-registry-net:
+        ipv4_address: 192.168.100.2
+
+  # cesanta/docker_auth
+  cesanta-docker_auth:
+    image: cesanta/docker_auth:1.12
+    restart: always
+    stdin_open: true
+    tty: true
+    container_name: cesanta-docker_auth
+    volumes:
+      - $PWD/config:/config:ro
+      - $PWD/ssl:/ssl
+      - $PWD/logs:/logs
+    ports:
+      - "5001:5001"
+    command:
+      - /config/config.yml
+    networks:
+      docker-registry-net:
+        ipv4_address: 192.168.100.3
+
+# networks
+networks:
+  docker-registry-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
+
